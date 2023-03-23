@@ -1,0 +1,253 @@
+/*Problem Statement:
+
+Find the first circular tour that visits all petrol pumps
+
+Suppose there is a circle. There are n petrol pumps on that circle. You are given two sets of data.
+
+i. The amount of petrol that every petrol pump has.
+
+ii. Distance from that petrol pump to the next petrol pump.
+
+Questions:
+
+a. Which data structure will be used to represent the structure for solving the problem? Justify it.
+
+b. Design and implement the given scenario using linked list
+
+c. Find the first point from where a truck will be able to complete the circle (The truck will stop at each petrol pump and it has infinite capacity).
+
+Assume for 1 litre petrol, the truck can go 1 unit of distance.
+
+
+
+For example, let there be 4 petrol pumps with amount of petrol and distance to next petrol pump value pairs as {4, 6}, {6, 5}, {7, 3} and {4, 5}. The first point from where truck can make a circular tour is 2nd petrol pump. Output should be starting petrol pump  = 1(index of 2nd petrol pump)and complete tour is 1->2->3->0->1 */
+
+/*NAME-YASH GANDHI
+BATCH A SE IT
+14
+*/
+
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct petrol_pump      /* structure for petrol pump*/
+{
+ int num;
+ int petrol;
+ int distnext;
+ struct petrol_pump* next;
+}pump;
+
+ pump* front=NULL;
+ pump* rear=NULL;
+
+
+void add(int n)                           /*function to add a node to the structure*/
+ {
+  int i;
+  for(i=0;i<n;i++)
+  {
+  pump* node=(pump*)malloc(sizeof(pump));
+  printf("enter petrolpump number\n");
+  scanf("%d",&node->num);
+  printf("enter petrol\n");
+  scanf("%d",&node->petrol);
+  printf("enter dist to next\n");
+  scanf("%d",&node->distnext);
+
+ if(front==NULL)
+ {
+ front=node;
+ rear=node;
+ node->next=front;
+ }
+ else
+ {
+ node->next=front;
+ rear->next=node;
+ rear=node;
+ }
+ }
+}
+void display()                               /*function to display details of the pump*/
+{
+ pump* curr;
+ curr=front;
+
+ do
+ {
+ printf("pump %d -  petrol %d,dist %d \n",curr->num,curr->petrol,curr->distnext);
+ curr=curr->next;
+ }
+ while(curr!=front) ;
+ }
+
+
+
+void search()                                /*function to find possible journeys*/
+ {
+    pump* curr=front;
+    pump* rev=curr;
+    int sump,sumd;
+    do{
+           int ctr=0;sump=0;
+              do{
+	   sumd=rev->distnext;
+	   sump=sump+rev->petrol;
+	   if(sumd>sump)
+	    {
+	     ctr=1;
+	     printf("not possible to start with %d \n",curr->num);
+	     break;
+	    }
+	    sump=sump-sumd;
+	    rev=rev->next;
+
+	}
+                  while(rev!=curr);
+	if(ctr==0)
+	{
+	   rev=curr;
+	   do{
+                           printf("%d ->",rev->num);
+	         rev=rev->next;
+	    }
+                     while(rev!=curr);
+	    printf("%d \n",rev->num);
+	}
+	curr=curr->next;
+	rev=curr;
+     }
+   while(curr!=front);
+
+}
+
+void main()
+{
+
+ int i;
+ printf("enter the number of pumps\n");
+ scanf("%d",&i);
+ add(i);                                                         /*function calls*/
+ display();
+ printf("\nthe routes if possible\n");
+ search();
+
+}
+
+
+/* 
+output 1
+
+enter the number of pumps
+4
+enter petrolpump number
+1
+enter petrol
+2
+enter dist to next
+3
+enter petrolpump number
+2
+enter petrol
+3
+enter dist to next
+2
+enter petrolpump number
+3
+enter petrol
+4
+enter dist to next
+3
+enter petrolpump number
+4
+enter petrol
+5
+enter dist to next
+4
+pump 1 -  petrol 2,dist 3 
+pump 2 -  petrol 3,dist 2 
+pump 3 -  petrol 4,dist 3 
+pump 4 -  petrol 5,dist 4 
+
+the routes if possible
+not possible to start with 1 
+2 ->3 ->4 ->1 ->2 
+3 ->4 ->1 ->2 ->3 
+4 ->1 ->2 ->3 ->4 
+
+ output 2
+enter the number of pumps
+4
+enter petrolpump number
+1
+enter petrol
+3
+enter dist to next
+6
+enter petrolpump number
+2
+enter petrol
+3
+enter dist to next
+6
+enter petrolpump number
+3
+enter petrol
+3
+enter dist to next
+6
+enter petrolpump number
+4
+enter petrol
+3
+enter dist to next
+6
+pump 1 -  petrol 3,dist 6 
+pump 2 -  petrol 3,dist 6 
+pump 3 -  petrol 3,dist 6 
+pump 4 -  petrol 3,dist 6 
+
+the routes if possible
+not possible to start with 1 
+not possible to start with 2 
+not possible to start with 3 
+not possible to start with 4 
+
+enter the number of pumps
+4
+enter petrolpump number
+1
+enter petrol
+3
+enter dist to next
+4
+enter petrolpump number
+2
+enter petrol
+6
+enter dist to next
+3
+enter petrolpump number
+3
+enter petrol
+6
+enter dist to next
+8
+enter petrolpump number
+4
+enter petrol
+4
+enter dist to next
+4
+pump 1 -  petrol 3,dist 4
+pump 2 -  petrol 6,dist 3 
+pump 3 -  petrol 6,dist 8 
+pump 4 -  petrol 4,dist 4 
+
+the routes if possible
+not possible to start with 1 
+2 ->3 ->4 ->1 ->2 
+not possible to start with 3 
+not possible to start with 4
+*/
